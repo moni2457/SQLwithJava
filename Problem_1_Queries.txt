@@ -1,0 +1,32 @@
+Query 1
+select * from customers c join employees e on c.salesRepEmployeeNumber = e.employeeNumber 
+join offices o on e.officeCode = o.officeCode where c.city != o.city;
+
+Query 2
+select distinct o.orderNumber from products p join orderdetails od on p.productCode = od.productCode join 
+orders o on o.orderNumber = od.orderNumber where od.priceEach < p.MSRP;
+
+Query 3
+select distinct p.productName, avg(((od.priceEach - p.buyPrice)/p.buyPrice)*100) as markup
+ from products p join orderdetails od on p.productCode = od.productCode join orders o on 
+o.orderNumber = od.orderNumber join customers c on c.customerNumber = o.customerNumber  
+where year(o.orderDate) = 2004 group by p.productName order by markup desc limit 5;
+
+
+Query 4
+
+select detail.employeeNumber, avg(count) as avgDiversity from (select e.employeeNumber, 
+count(distinct p.productCode) as count from employees e join customers c  
+on e.employeeNumber = c.salesRepEmployeeNumber join  orders o on o.customerNumber = c.customerNumber  
+join orderdetails od on od.orderNumber = o.orderNumber join products p on p.productCode = od.productCode 
+group by od.orderNumber order by count desc ) as detail group by detail.employeeNumber order by 
+avgDiversity desc limit 3;
+
+Query 5
+select o.officeCode, o.city, avg(timediff(os.shippedDate,os.orderDate)) as avgTime from offices o join 
+employees e on o.officeCode = e.officeCode join customers c on c.salesRepEmployeeNumber = e.employeeNumber 
+join orders os on os.customerNumber = c.customerNumber where year(os.orderDate) = 2005 group by o.officeCode; 
+
+
+
+
